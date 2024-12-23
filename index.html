@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f9;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .error {
+      color: red;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Checkout Page</h2>
+    <form id="checkoutForm">
+      <label for="fullname">Full Name</label>
+      <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required />
+
+      <label for="bill_address">Billing Address</label>
+      <input type="text" id="bill_address" name="bill_address" placeholder="Enter your address" required />
+
+      <label for="bill_city">City</label>
+      <input type="text" id="bill_city" name="bill_city" placeholder="Enter your city" required />
+
+      <label for="bill_state">State</label>
+      <input type="text" id="bill_state" name="bill_state" placeholder="Enter your state" required />
+
+      <label for="bill_country">Country</label>
+      <select id="bill_country" name="bill_country" required>
+        <option value="IN">India</option>
+        <option value="US">United States</option>
+        <option value="UK">United Kingdom</option>
+      </select>
+
+      <label for="bill_zip">ZIP Code</label>
+      <input type="text" id="bill_zip" name="bill_zip" placeholder="Enter your ZIP code" required />
+
+      <label for="bill_phone">Phone Number - With Country Code</label>
+      <input type="tel" id="bill_phone" name="bill_phone" placeholder="Enter your phone number" required />
+
+      <label for="bill_email">Email Address</label>
+      <input type="email" id="bill_email" name="bill_email" placeholder="Enter your email address" required />
+
+      <label for="product_name">Product</label>
+      <select id="product_name" name="product_name" required>
+        <option value="Puma Petronas T-shirt">Puma Petronas T-shirt</option>
+        <option value="Adidas Running Shoes">Adidas Running Shoes</option>
+        <option value="Nike Dri-Fit Shorts">Nike Dri-Fit Shorts</option>
+        <option value="Reebok Gym Bag">Reebok Gym Bag</option>
+      </select>
+
+      <label for="bill_amt">Amount</label>
+      <input type="number" id="bill_amt" name="bill_amt"  />
+
+      <label for="bill_currency">Currency</label>
+      <select id="bill_currency" name="bill_currency" required>
+        <option value="INR">INR</option>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+      </select>
+
+      <button type="submit">Submit</button>
+    </form>
+    <p class="error" id="errorMessage"></p>
+  </div>
+
+  <script>
+    document.getElementById('checkoutForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const formData = {
+        fullname: document.getElementById('fullname').value,
+        bill_address: document.getElementById('bill_address').value,
+        bill_city: document.getElementById('bill_city').value,
+        bill_state: document.getElementById('bill_state').value,
+        bill_country: document.getElementById('bill_country').value,
+        bill_zip: document.getElementById('bill_zip').value,
+        bill_phone: document.getElementById('bill_phone').value,
+        bill_email: document.getElementById('bill_email').value,
+        bill_amt: parseFloat(document.getElementById('bill_amt').value),
+        bill_currency: document.getElementById('bill_currency').value,
+        product_name: document.getElementById('product_name').value,
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000/v1/checkout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          alert('Payment processed successfully!');
+        } else {
+          const errorData = await response.json();
+          document.getElementById('errorMessage').innerText = errorData.message || 'Payment failed!';
+        }
+      } catch (error) {
+        document.getElementById('errorMessage').innerText = 'An error occurred. Please try again.';
+        console.error('Error:', error);
+      }
+    });
+  </script>
+</body>
+</html>
